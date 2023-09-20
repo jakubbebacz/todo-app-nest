@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    container_name: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: nest-docker
+    #    environment:
+    #      - PORT=${PORT}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./apps/client
+      dockerfile: Dockerfile
+    container_name: react-docker
+    ports:
+      - '5173:5173'
